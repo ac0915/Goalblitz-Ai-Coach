@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0d12">
+  <title>GoalBlitz</title>
+
+  <style>
+    :root {
+      --coach-width: 420px;
+      --black: #0a0d12;
+      --white: #f5f2eb;
+      --line: rgba(245, 242, 235, 0.18);
+      --lime: #c8ff61;
+      --blue: #6ab3ff;
+      font-family: Arial, "Microsoft JhengHei", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; overflow-x: hidden; color: var(--white); background: var(--black); }
+    button, input { font: inherit; }
+
+    #site-content {
+      width: calc(100% - var(--coach-width));
+      min-height: 100vh;
+      background: var(--black);
+      transition: width 300ms ease;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+      padding: 0 5vw;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(10,13,18,0.88);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -0.7px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-copy {
+      color: #c4ced6;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .language-switcher {
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .language-btn {
+      min-width: 30px;
+      height: 26px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 8px;
+      color: #b7c6d1;
+      background: transparent;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .language-btn:hover { color: #fff; }
+
+    .language-btn.active {
+      color: #0a0d12;
+      background: var(--lime);
+    }
+
+    .section {
+      position: relative;
+      overflow: hidden;
+      padding: 115px 7vw;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1, h2 {
+      font-weight: 900;
+      line-height: 0.84;
+      letter-spacing: -0.085em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      min-height: 780px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-top: 160px;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 88% 18%, rgba(101,179,255,0.36), transparent 27rem),
+        radial-gradient(circle at 74% 88%, rgba(200,255,97,0.16), transparent 28rem),
+        #101d29;
+    }
+
+    .hero .eyebrow {
+      position: relative;
+      color: var(--lime);
+    }
+
+    .hero h1 {
+      position: relative;
+      max-width: 850px;
+      margin-bottom: 25px;
+      font-size: clamp(64px,10vw,155px);
+    }
+
+    .hero h1 span { color: var(--lime); }
+
+    .hero p {
+      position: relative;
+      max-width: 410px;
+      margin: 0;
+      color: #d3dce1;
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .scroll-label {
+      position: relative;
+      margin-top: 47px;
+      color: #b6c3cc;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(250px,.9fr);
+      gap: 7vw;
+      align-items: center;
+      min-height: 720px;
+      color: #112026;
+      background: var(--white);
+    }
+
+    .intro .eyebrow { color: #59806d; }
+
+    .intro h2 {
+      margin-bottom: 28px;
+      font-size: clamp(50px,7vw,105px);
+    }
+
+    .intro p:not(.eyebrow) {
+      max-width: 430px;
+      margin: 0;
+      color: #4d5c61;
+      font-size: 19px;
+      line-height: 1.56;
+    }
+
+    .match-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 45px;
+    }
+
+    .match-stat strong {
+      color: #087257;
+      font-size: clamp(85px,10vw,150px);
+      letter-spacing: -0.1em;
+      line-height: .7;
+    }
+
+    .match-stat span {
+      max-width: 120px;
+      color: #54726b;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+
+    .visual-slot {
+      min-height: 470px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 230px 230px 14px 14px;
+      background: linear-gradient(150deg,#72e8a2,#087763 48%,#194e72);
+    }
+
+    .visual-slot::after {
+      content: "ADD YOUR GOALBLITZ SCREENSHOT HERE";
+      position: absolute;
+      right: 18px;
+      bottom: 19px;
+      width: 160px;
+      color: rgba(255,255,255,.9);
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: .11em;
+    }
+
+    .feature {
+      min-height: 720px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0;
+    }
+
+    .feature-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 110px 7vw 70px;
+    }
+
+    .feature-copy h2 {
+      margin-bottom: 28px;
+      font-size: clamp(56px,8vw,122px);
+    }
+
+    .feature-copy p:not(.eyebrow) {
+      max-width: 355px;
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .feature-index {
+      margin-top: 48px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      opacity: .62;
+    }
+
+    .feature-visual {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+    }
+
+    .feature-visual span {
+      position: absolute;
+      right: 22px;
+      bottom: 20px;
+      color: rgba(255,255,255,.82);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    .powered .feature-copy {
+      color: #102616;
+      background: #c8ff61;
+    }
+
+    .powered .feature-copy .eyebrow { color: #35714b; }
+    .powered .feature-copy p { color: #2f4b38; }
+
+    .powered .feature-visual {
+      background:
+        radial-gradient(circle at 50% 50%,#efffbd 0 3%,transparent 3.4%),
+        radial-gradient(circle at 50% 50%,#19552d 0 14%,transparent 14.5%),
+        radial-gradient(circle at 50% 50%,transparent 0 30%,rgba(255,255,255,.34) 30.3% 30.7%,transparent 31%),
+        linear-gradient(135deg,#067357,#57dd55 60%,#e3ff9c);
+    }
+
+    .dash .feature-copy {
+      color: #f3f8ff;
+      background: #0c428e;
+    }
+
+    .dash .feature-copy .eyebrow { color: #a6d9ff; }
+    .dash .feature-copy p { color: #c5e0f5; }
+
+    .dash .feature-visual {
+      background:
+        repeating-linear-gradient(132deg,transparent 0 25px,rgba(220,242,255,.38) 26px 29px,transparent 30px 55px),
+        linear-gradient(135deg,#071f44,#1674ce 58%,#79ccff);
+    }
+
+    .win {
+      min-height: 650px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: #201614;
+      background: #ed7259;
+    }
+
+    .win .eyebrow { color: #774137; }
+
+    .win h2 {
+      position: relative;
+      z-index: 1;
+      max-width: 670px;
+      margin-bottom: 27px;
+      font-size: clamp(64px,10vw,145px);
+    }
+
+    .win p {
+      position: relative;
+      z-index: 1;
+      max-width: 380px;
+      margin: 0;
+      color: #4c2b25;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .support {
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+      padding: 110px 7vw;
+      text-align: center;
+      background: #0a0d12;
+    }
+
+    .support-inner { max-width: 720px; }
+    .support .eyebrow { color: var(--lime); }
+
+    .support h2 {
+      margin-bottom: 28px;
+      font-size: clamp(58px,9vw,132px);
+    }
+
+    .support p {
+      max-width: 460px;
+      margin: 0 auto;
+      color: #bfcbd3;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .support-note {
+      display: inline-block;
+      margin-top: 35px;
+      border: 1px solid rgba(200,255,97,.4);
+      border-radius: 999px;
+      padding: 12px 16px;
+      color: var(--lime);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .coach-panel {
+      position: fixed;
+      z-index: 30;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: var(--coach-width);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: #eff7ff;
+      background: #102336;
+      box-shadow: -20px 0 60px rgba(0,0,0,.32);
+      transition: transform 300ms ease;
+    }
+
+    body.coach-hidden #site-content { width: 100%; }
+
+    body.coach-hidden .coach-panel {
+      transform: translateX(100%);
+      pointer-events: none;
+    }
+
+    .coach-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 23px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg,#173a59,#102436);
+    }
+
+    .coach-brand {
+      margin-bottom: 6px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .15em;
+    }
+
+    .coach-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .coach-header h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 23px;
+      letter-spacing: -.8px;
+    }
+
+    .coach-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #a8c2d4;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #67e8a5;
+      box-shadow: 0 0 0 3px rgba(103,232,165,.13);
+    }
+
+    .coach-header p {
+      margin: 5px 0 0;
+      color: #b7c8d6;
+      font-size: 12px;
+    }
+
+    .hide-coach {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--white);
+      background: transparent;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .show-coach {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 31;
+      display: none;
+      align-items: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 18px;
+      color: #0a0d12;
+      background: var(--lime);
+      box-shadow: 0 12px 30px rgba(0,0,0,.3);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    body.coach-hidden .show-coach { display: flex; }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      padding: 20px;
+      background: #102336;
+    }
+
+    .coach-welcome {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      min-height: 100%;
+      padding: 2px 0 24px;
+    }
+
+    .coach-intro-card {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      padding: 17px;
+      border: 1px solid rgba(200,255,97,.22);
+      border-radius: 17px;
+      background: linear-gradient(135deg,rgba(200,255,97,.1),transparent 62%),#173754;
+    }
+
+    .coach-avatar {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      border-radius: 12px;
+      color: #0a0d12;
+      background: var(--lime);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .coach-intro-title {
+      margin-bottom: 6px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .coach-intro-text {
+      color: #c2d2df;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .coach-section-label {
+      color: #8fa9bc;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .15em;
+    }
+
+    .coach-quick-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .coach-quick-q {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 32px minmax(0,1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 62px;
+      padding: 10px 11px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 13px;
+      color: #eef6fc;
+      background: #15314b;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .coach-quick-q:hover {
+      transform: translateY(-2px);
+      border-color: rgba(200,255,97,.4);
+      background: #1a3a58;
+    }
+
+    .quick-icon {
+      display: grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      border-radius: 9px;
+      color: #0a0d12;
+      background: #8fceff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .coach-quick-q:nth-child(2) .quick-icon { background: #c8ff61; }
+    .coach-quick-q:nth-child(3) .quick-icon { background: #ff9d80; }
+    .coach-quick-q:nth-child(4) .quick-icon { background: #d4b4ff; }
+
+    .coach-quick-q strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .coach-quick-q small {
+      display: block;
+      color: #9fb7c8;
+      font-size: 11px;
+    }
+
+    .quick-arrow {
+      color: #a9c7dc;
+      font-size: 18px;
+    }
+
+    .coach-tip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding: 11px 12px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      color: #91a9ba;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .tip-mark {
+      flex: 0 0 auto;
+      color: var(--lime);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .1em;
+    }
+
+    .message-row { display: flex; }
+
+    .message-row.user {
+      justify-content: flex-end;
+      animation: userMessageEnter 260ms cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .message {
+      max-width: 88%;
+      padding: 12px 14px;
+      border-radius: 15px 15px 15px 4px;
+      color: #f4f8fc;
+      background: #23496d;
+      font-size: 14px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .user .message {
+      border-radius: 15px 15px 4px 15px;
+      background: #087d60;
+    }
+
+    /* Smooth animated AI thinking card. */
+    .thinking-card {
+      width: min(88%, 310px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      overflow: hidden;
+      border: 1px solid rgba(200,255,97,.18);
+      border-radius: 16px 16px 16px 4px;
+      color: #dcebf4;
+      background:
+        linear-gradient(135deg, rgba(35,73,109,.98), rgba(25,57,85,.98));
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      animation: thinkingEnter 360ms cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .thinking-card.leaving {
+      animation: thinkingLeave 260ms ease forwards;
+    }
+
+    .thinking-orb {
+      position: relative;
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(200,255,97,.5);
+      border-radius: 50%;
+      background: rgba(200,255,97,.1);
+      box-shadow:
+        0 0 0 5px rgba(200,255,97,.045),
+        0 0 18px rgba(200,255,97,.15);
+      animation: orbPulse 1.6s ease-in-out infinite;
+    }
+
+    .thinking-orb::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 12px rgba(200,255,97,.75);
+    }
+
+    .thinking-copy {
+      min-width: 0;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .thinking-title {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .thinking-subtitle {
+      overflow: hidden;
+      color: #a9c2d3;
+      font-size: 10px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .thinking-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 14px;
+      margin-left: auto;
+    }
+
+    .thinking-bars span {
+      width: 3px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--lime);
+      animation: thinkingBar 900ms ease-in-out infinite;
+    }
+
+    .thinking-bars span:nth-child(2) { animation-delay: 140ms; }
+    .thinking-bars span:nth-child(3) { animation-delay: 280ms; }
+
+    /* Answer, feedback, and suggested-question area. */
+    .coach-answer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      transform-origin: left bottom;
+    }
+
+    .answer-enter {
+      animation: answerEnter 420ms cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .message-feedback {
+      display: flex;
+      align-self: flex-start;
+      gap: 7px;
+      margin: 5px 0 2px 2px;
+    }
+
+    .message-feedback button {
+      border: 1px solid rgba(106,179,255,.28);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: #a9c7dc;
+      background: transparent;
+      font-size: 10px;
+      cursor: pointer;
+      transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+    }
+
+    .message-feedback button:hover {
+      border-color: rgba(200,255,97,.55);
+      color: var(--lime);
+      background: rgba(200,255,97,.08);
+    }
+
+    .suggested-questions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 7px 0 5px 2px;
+    }
+
+    .suggested-questions button {
+      border: 1px solid rgba(200,255,97,.38);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--lime);
+      background: rgba(200,255,97,.07);
+      font-size: 10px;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .suggested-questions button:hover {
+      transform: translateY(-1px);
+      border-color: var(--lime);
+      background: rgba(200,255,97,.16);
+    }
+
+    #question-form {
+      display: flex;
+      gap: 9px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      background: #0d1d2c;
+    }
+
+    .input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+
+    #question {
+      width: 100%;
+      height: 48px;
+      padding: 0 13px;
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 12px;
+      outline: none;
+      color: #fff;
+      background: #19354f;
+    }
+
+    #question:focus { border-color: var(--blue); }
+
+    #question::placeholder { color: #a1b5c5; }
+
+    #send {
+      height: 48px;
+      min-width: 68px;
+      border: 0;
+      border-radius: 12px;
+      color: #0a0d12;
+      background: var(--lime);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 150ms ease, filter 150ms ease;
+    }
+
+    #send:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    #send:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    .input-hint {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 2px;
+      display: none;
+      color: #a8c1d3;
+      font-size: 10px;
+    }
+
+    body.is-thinking .input-hint { display: block; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(55px) scale(.98);
+      transition: opacity 700ms ease,transform 700ms cubic-bezier(.16,1,.3,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes thinkingEnter {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes thinkingLeave {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        max-height: 80px;
+        margin-bottom: 0;
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-5px) scale(.98);
+        max-height: 0;
+        margin-bottom: -13px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    @keyframes answerEnter {
+      from {
+        opacity: 0;
+        transform: translateY(9px) scale(.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes userMessageEnter {
+      from {
+        opacity: 0;
+        transform: translateX(10px) scale(.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    @keyframes orbPulse {
+      0%, 100% {
+        transform: scale(.94);
+        opacity: .78;
+      }
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    @keyframes thinkingBar {
+      0%, 100% {
+        height: 5px;
+        opacity: .45;
+      }
+      50% {
+        height: 13px;
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .message-row.user,
+      .thinking-card,
+      .thinking-card.leaving,
+      .thinking-orb,
+      .thinking-bars span,
+      .answer-enter {
+        animation: none;
+      }
+    }
+
+    @media (max-width:900px) {
+      :root { --coach-width: 360px; }
+      .intro { grid-template-columns: 1fr; gap: 55px; }
+      .visual-slot { max-width: 550px; }
+      .feature { grid-template-columns: 1fr; }
+      .feature-visual { min-height: 470px; }
+    }
+
+    @media (max-width:700px) {
+      #site-content,
+      body.coach-hidden #site-content { width: 100%; }
+
+      .coach-panel { width: min(430px,100vw); }
+
+      .nav {
+        height: 64px;
+        padding: 0 7vw;
+      }
+
+      .nav-copy { display: none; }
+
+      .section {
+        padding-left: 8vw;
+        padding-right: 8vw;
+      }
+
+      .hero {
+        min-height: 85svh;
+        padding-top: 125px;
+      }
+
+      .hero h1 { font-size: clamp(62px,17vw,104px); }
+
+      .intro {
+        min-height: auto;
+        padding-top: 95px;
+        padding-bottom: 95px;
+      }
+
+      .feature-copy {
+        min-height: 480px;
+        padding: 90px 8vw 60px;
+      }
+
+      .feature-visual { min-height: 360px; }
+      .win { min-height: 570px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-content">
+    <nav class="nav">
+      <div class="brand">GOALBLITZ</div>
+
+      <div class="nav-actions">
+        <div class="language-switcher" aria-label="Language selector">
+          <button class="language-btn active" type="button" data-lang="en">EN</button>
+          <button class="language-btn" type="button" data-lang="zh-Hant">繁</button>
+          <button class="language-btn" type="button" data-lang="zh-Hans">简</button>
+        </div>
+
+        <div class="nav-copy" data-i18n="navCopy">
+          Fast football. Smart decisions.
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="section hero">
+        <div class="eyebrow" data-i18n="heroEyebrow">Android Football Game</div>
+        <h1 data-i18n-html="heroTitle">Play fast.<br><span>Strike hard.</span></h1>
+        <p data-i18n="heroText">
+          A fast football game where positioning, timing, Dash and Powered Kick decide every moment.
+        </p>
+        <div class="scroll-label" data-i18n="scrollLabel">Scroll to explore</div>
+      </section>
+
+      <section class="section intro">
+        <div class="reveal">
+          <p class="eyebrow" data-i18n="matchEyebrow">01 / The match</p>
+          <h2 data-i18n-html="matchTitle">Every second<br>counts.</h2>
+          <p data-i18n="matchText">
+            Get the angle. Read the play. Send the ball where it needs to go. The first player or team to score three goals wins.
+          </p>
+          <div class="match-stat">
+            <strong>3</strong>
+            <span data-i18n="goalsToWin">Goals to win the match</span>
+          </div>
+        </div>
+
+        <div class="visual-slot reveal"></div>
+      </section>
+
+      <section class="feature powered">
+        <div class="feature-copy reveal">
+          <div>
+            <p class="eyebrow" data-i18n="poweredEyebrow">02 / Core mechanic</p>
+            <h2 data-i18n-html="poweredTitle">Powered<br>Kick.</h2>
+            <p data-i18n="poweredText">
+              Stay with the ball to build charge. Watch and listen for the signal, then press Kick before you lose it.
+            </p>
+          </div>
+
+          <span class="feature-index">GOALBLITZ / 01</span>
+        </div>
+
+        <div class="feature-visual reveal">
+          <span>POWERED KICK VISUAL</span>
+        </div>
+      </section>
+
+      <section class="feature dash">
+        <div class="feature-visual reveal">
+          <span>DASH VISUAL</span>
+        </div>
+
+        <div class="feature-copy reveal">
+          <div>
+            <p class="eyebrow" data-i18n="dashEyebrow">03 / Make space</p>
+            <h2 data-i18n="dashTitle">Dash.</h2>
+            <p data-i18n="dashText">
+              A short burst of speed changes the angle, reaches the ball first, or creates the room you need for the next Kick.
+            </p>
+          </div>
+
+          <span class="feature-index">GOALBLITZ / 02</span>
+        </div>
+      </section>
+
+      <section class="section win">
+        <p class="eyebrow" data-i18n="winEyebrow">04 / The objective</p>
+        <h2 data-i18n-html="winTitle">First<br>to three.</h2>
+        <p data-i18n="winText">
+          Score three goals before your opponent and take the match.
+        </p>
+      </section>
+
+      <section class="section support">
+        <div class="support-inner reveal">
+          <p class="eyebrow" data-i18n="supportEyebrow">GoalBlitz support</p>
+          <h2 data-i18n-html="supportTitle">The Coach is<br>always ready.</h2>
+          <p data-i18n="supportText">
+            Use the AI Coach on the right whenever you need quick help with gameplay, controls, or match rules.
+          </p>
+          <div class="support-note" data-i18n="supportNote">
+            You can hide the panel if you want more space.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button id="show-coach" class="show-coach" type="button">AI COACH</button>
+
+  <aside id="coach-panel" class="coach-panel" aria-label="GoalBlitz AI Coach">
+    <header class="coach-header">
+      <div>
+        <div class="coach-brand">GOALBLITZ</div>
+
+        <div class="coach-title-row">
+          <h3 data-i18n="coachName">AI Coach</h3>
+          <span class="coach-status">
+            <span class="status-dot"></span>
+            <span data-i18n="ready">Ready</span>
+          </span>
+        </div>
+
+        <p data-i18n="coachHeaderCopy">
+          Gameplay guidance for every match.
+        </p>
+      </div>
+
+      <button id="hide-coach" class="hide-coach" type="button">×</button>
+    </header>
+
+    <section id="chat" aria-live="polite">
+      <div id="coach-welcome" class="coach-welcome">
+        <div class="coach-intro-card">
+          <div class="coach-avatar">GB</div>
+
+          <div>
+            <div class="coach-intro-title" data-i18n="introTitle">
+              Match support, on demand.
+            </div>
+
+            <div class="coach-intro-text" data-i18n="introText">
+              I can help you understand controls, improve your timing, and make better decisions during a match.
+            </div>
+          </div>
+        </div>
+
+        <div class="coach-section-label" data-i18n="quickQuestions">
+          QUICK QUESTIONS
+        </div>
+
+        <div class="coach-quick-grid">
+          <button class="coach-quick-q" type="button" data-question-key="poweredQuestion">
+            <span class="quick-icon">K</span>
+            <span>
+              <strong data-i18n="poweredQuickTitle">Powered Kick</strong>
+              <small data-i18n="poweredQuickSub">Learn the timing</small>
+            </span>
+            <span class="quick-arrow">→</span>
+          </button>
+
+          <button class="coach-quick-q" type="button" data-question-key="dashQuestion">
+            <span class="quick-icon">D</span>
+            <span>
+              <strong data-i18n="dashQuickTitle">Dash</strong>
+              <small data-i18n="dashQuickSub">Create space quickly</small>
+            </span>
+            <span class="quick-arrow">→</span>
+          </button>
+
+          <button class="coach-quick-q" type="button" data-question-key="winQuestion">
+            <span class="quick-icon">3</span>
+            <span>
+              <strong data-i18n="winQuickTitle">Win the match</strong>
+              <small data-i18n="winQuickSub">First to three goals</small>
+            </span>
+            <span class="quick-arrow">→</span>
+          </button>
+
+          <button class="coach-quick-q" type="button" data-question-key="beginnerQuestion">
+            <span class="quick-icon">+</span>
+            <span>
+              <strong data-i18n="beginnerQuickTitle">Beginner tips</strong>
+              <small data-i18n="beginnerQuickSub">Start with the basics</small>
+            </span>
+            <span class="quick-arrow">→</span>
+          </button>
+        </div>
+
+        <div class="coach-tip">
+          <span class="tip-mark" data-i18n="tipMark">TIP</span>
+          <span data-i18n="tipText">Ask a specific question for a more useful answer.</span>
+        </div>
+      </div>
+    </section>
+
+    <form id="question-form">
+      <div class="input-wrap">
+        <input
+          id="question"
+          type="text"
+          autocomplete="off"
+          placeholder="Ask the AI Coach..."
+          data-i18n-placeholder="inputPlaceholder"
+          required
+        >
+
+        <div class="input-hint" data-i18n="inputHint">
+          The AI Coach is answering. You can keep typing and send when it finishes.
+        </div>
+      </div>
+
+      <button id="send" type="submit" data-i18n="send">Send</button>
+    </form>
+  </aside>
+
+  <script>
+    const hideCoachButton = document.getElementById("hide-coach");
+    const showCoachButton = document.getElementById("show-coach");
+    const form = document.getElementById("question-form");
+    const input = document.getElementById("question");
+    const chat = document.getElementById("chat");
+    const sendButton = document.getElementById("send");
+    const welcomeEl = document.getElementById("coach-welcome");
+
+    let isThinking = false;
+    let currentLanguage = "en";
+
+    // Conversation history for follow-up questions.
+    let conversationHistory = [];
+
+    const translations = {
+      en: {
+        navCopy: "Fast football. Smart decisions.",
+        heroEyebrow: "Android Football Game",
+        heroTitle: "Play fast.<br><span>Strike hard.</span>",
+        heroText: "A fast football game where positioning, timing, Dash and Powered Kick decide every moment.",
+        scrollLabel: "Scroll to explore",
+        matchEyebrow: "01 / The match",
+        matchTitle: "Every second<br>counts.",
+        matchText: "Get the angle. Read the play. Send the ball where it needs to go. The first player or team to score three goals wins.",
+        goalsToWin: "Goals to win the match",
+        poweredEyebrow: "02 / Core mechanic",
+        poweredTitle: "Powered<br>Kick.",
+        poweredText: "Stay with the ball to build charge. Watch and listen for the signal, then press Kick before you lose it.",
+        dashEyebrow: "03 / Make space",
+        dashTitle: "Dash.",
+        dashText: "A short burst of speed changes the angle, reaches the ball first, or creates the room you need for the next Kick.",
+        winEyebrow: "04 / The objective",
+        winTitle: "First<br>to three.",
+        winText: "Score three goals before your opponent and take the match.",
+        supportEyebrow: "GoalBlitz support",
+        supportTitle: "The Coach is<br>always ready.",
+        supportText: "Use the AI Coach on the right whenever you need quick help with gameplay, controls, or match rules.",
+        supportNote: "You can hide the panel if you want more space.",
+        coachName: "AI Coach",
+        ready: "Ready",
+        coachHeaderCopy: "Gameplay guidance for every match.",
+        introTitle: "Match support, on demand.",
+        introText: "I can help you understand controls, improve your timing, and make better decisions during a match.",
+        quickQuestions: "QUICK QUESTIONS",
+        poweredQuickTitle: "Powered Kick",
+        poweredQuickSub: "Learn the timing",
+        dashQuickTitle: "Dash",
+        dashQuickSub: "Create space quickly",
+        winQuickTitle: "Win the match",
+        winQuickSub: "First to three goals",
+        beginnerQuickTitle: "Beginner tips",
+        beginnerQuickSub: "Start with the basics",
+        tipMark: "TIP",
+        tipText: "Ask a specific question for a more useful answer.",
+        inputPlaceholder: "Ask the AI Coach...",
+        inputHint: "The AI Coach is answering. You can keep typing and send when it finishes.",
+        thinkingPlaceholder: "You can type your next question while the AI Coach answers...",
+        thinking: "AI Coach is thinking",
+        thinkingSubtitles: [
+          "Checking the GoalBlitz guide...",
+          "Reviewing match mechanics...",
+          "Preparing a coaching tip..."
+        ],
+        send: "Send",
+        helpful: "Helpful",
+        notHelpful: "Not helpful",
+        thanks: "Thanks for the feedback.",
+        poweredQuestion: "How do I use Powered Kick?",
+        dashQuestion: "How does Dash work?",
+        winQuestion: "How do I win a match?",
+        beginnerQuestion: "What should I focus on as a beginner?",
+        suggestedQuestion1: "Ask about Powered Kick",
+        suggestedQuestion2: "Ask about Dash",
+        suggestedQuestion3: "Ask for beginner tips",
+        fallback: "I do not have that information in the current GoalBlitz guide.",
+        errorPrefix: "Sorry, "
+      },
+
+      "zh-Hant": {
+        navCopy: "快速足球。聰明決策。",
+        heroEyebrow: "Android 足球遊戲",
+        heroTitle: "快速出擊。<br><span>全力射門。</span>",
+        heroText: "節奏快速的足球遊戲。站位、時機、衝刺與強力射門，決定每一個瞬間。",
+        scrollLabel: "向下捲動探索",
+        matchEyebrow: "01 / 比賽",
+        matchTitle: "每一秒<br>都很重要。",
+        matchText: "找到角度、閱讀局勢，將球送到應該去的位置。率先攻入三球的玩家或隊伍獲勝。",
+        goalsToWin: "贏得比賽所需進球",
+        poweredEyebrow: "02 / 核心機制",
+        poweredTitle: "強力<br>射門。",
+        poweredText: "持續控球來累積能量。留意提示，在失去球權前按下射門。",
+        dashEyebrow: "03 / 創造空間",
+        dashTitle: "衝刺。",
+        dashText: "短暫加速可以改變角度、搶先碰到球，或為下一次射門創造空間。",
+        winEyebrow: "04 / 目標",
+        winTitle: "率先<br>三球。",
+        winText: "在對手之前攻入三球，拿下這場比賽。",
+        supportEyebrow: "GoalBlitz 支援",
+        supportTitle: "教練隨時<br>準備協助。",
+        supportText: "需要遊戲玩法、操作方式或比賽規則的快速協助時，可以使用右側 AI 教練。",
+        supportNote: "想要更多畫面空間時，可以隱藏此面板。",
+        coachName: "AI 教練",
+        ready: "準備完成",
+        coachHeaderCopy: "為每一場比賽提供遊戲指引。",
+        introTitle: "隨時提供比賽支援。",
+        introText: "我可以幫你了解操作、改善時機掌握，並在比賽中做出更好的決策。",
+        quickQuestions: "常見問題",
+        poweredQuickTitle: "強力射門",
+        poweredQuickSub: "掌握出腳時機",
+        dashQuickTitle: "衝刺",
+        dashQuickSub: "快速創造空間",
+        winQuickTitle: "贏得比賽",
+        winQuickSub: "率先攻入三球",
+        beginnerQuickTitle: "新手建議",
+        beginnerQuickSub: "從基礎開始",
+        tipMark: "提示",
+        tipText: "提出具體問題，可以得到更有用的回答。",
+        inputPlaceholder: "問問 AI 教練...",
+        inputHint: "AI 教練回答時，你仍可輸入下一個問題，完成後再送出。",
+        thinkingPlaceholder: "AI 教練回答時，你仍可輸入下一個問題...",
+        thinking: "AI 教練正在思考",
+        thinkingSubtitles: [
+          "正在查看 GoalBlitz 指南⋯⋯",
+          "正在確認比賽機制⋯⋯",
+          "正在準備教練建議⋯⋯"
+        ],
+        send: "送出",
+        helpful: "有幫助",
+        notHelpful: "沒有幫助",
+        thanks: "感謝你的回饋。",
+        poweredQuestion: "如何使用強力射門？",
+        dashQuestion: "衝刺怎樣運作？",
+        winQuestion: "如何贏得比賽？",
+        beginnerQuestion: "新手應該先專注什麼？",
+        suggestedQuestion1: "詢問強力射門",
+        suggestedQuestion2: "詢問衝刺",
+        suggestedQuestion3: "詢問新手建議",
+        fallback: "目前的 GoalBlitz 指南沒有這項資訊。",
+        errorPrefix: "抱歉，"
+      },
+
+      "zh-Hans": {
+        navCopy: "快速足球。聪明决策。",
+        heroEyebrow: "Android 足球游戏",
+        heroTitle: "快速出击。<br><span>全力射门。</span>",
+        heroText: "节奏快速的足球游戏。站位、时机、冲刺与强力射门，决定每一个瞬间。",
+        scrollLabel: "向下滚动探索",
+        matchEyebrow: "01 / 比赛",
+        matchTitle: "每一秒<br>都很重要。",
+        matchText: "找到角度、阅读局势，把球送到该去的位置。率先攻入三球的玩家或队伍获胜。",
+        goalsToWin: "赢得比赛所需进球",
+        poweredEyebrow: "02 / 核心机制",
+        poweredTitle: "强力<br>射门。",
+        poweredText: "持续控球来积累能量。留意提示，在失去球权前按下射门。",
+        dashEyebrow: "03 / 创造空间",
+        dashTitle: "冲刺。",
+        dashText: "短暂加速可以改变角度、抢先碰到球，或为下一次射门创造空间。",
+        winEyebrow: "04 / 目标",
+        winTitle: "率先<br>三球。",
+        winText: "在对手之前攻入三球，拿下这场比赛。",
+        supportEyebrow: "GoalBlitz 支持",
+        supportTitle: "教练随时<br>准备协助。",
+        supportText: "需要游戏玩法、操作方式或比赛规则的快速协助时，可以使用右侧 AI 教练。",
+        supportNote: "想要更多画面空间时，可以隐藏此面板。",
+        coachName: "AI 教练",
+        ready: "准备完成",
+        coachHeaderCopy: "为每一场比赛提供游戏指引。",
+        introTitle: "随时提供比赛支持。",
+        introText: "我可以帮你了解操作、改善时机掌握，并在比赛中做出更好的决策。",
+        quickQuestions: "常见问题",
+        poweredQuickTitle: "强力射门",
+        poweredQuickSub: "掌握出脚时机",
+        dashQuickTitle: "冲刺",
+        dashQuickSub: "快速创造空间",
+        winQuickTitle: "赢得比赛",
+        winQuickSub: "率先攻入三球",
+        beginnerQuickTitle: "新手建议",
+        beginnerQuickSub: "从基础开始",
+        tipMark: "提示",
+        tipText: "提出具体问题，可以得到更有用的回答。",
+        inputPlaceholder: "问问 AI 教练...",
+        inputHint: "AI 教练回答时，你仍可输入下一个问题，完成后再发送。",
+        thinkingPlaceholder: "AI 教练回答时，你仍可输入下一个问题...",
+        thinking: "AI 教练正在思考",
+        thinkingSubtitles: [
+          "正在查看 GoalBlitz 指南……",
+          "正在确认比赛机制……",
+          "正在准备教练建议……"
+        ],
+        send: "发送",
+        helpful: "有帮助",
+        notHelpful: "没有帮助",
+        thanks: "感谢你的反馈。",
+        poweredQuestion: "如何使用强力射门？",
+        dashQuestion: "冲刺怎样运作？",
+        winQuestion: "如何赢得比赛？",
+        beginnerQuestion: "新手应该先专注什么？",
+        suggestedQuestion1: "询问强力射门",
+        suggestedQuestion2: "询问冲刺",
+        suggestedQuestion3: "询问新手建议",
+        fallback: "当前 GoalBlitz 指南没有这项信息。",
+        errorPrefix: "抱歉，"
+      }
+    };
+
+    function translatePage(language) {
+      currentLanguage = language;
+
+      const t = translations[language];
+      document.documentElement.lang = language;
+
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.dataset.i18n;
+
+        if (t[key]) {
+          element.textContent = t[key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-html]").forEach(element => {
+        const key = element.dataset.i18nHtml;
+
+        if (t[key]) {
+          element.innerHTML = t[key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        const key = element.dataset.i18nPlaceholder;
+
+        if (t[key]) {
+          element.placeholder = t[key];
+        }
+      });
+
+      document.querySelectorAll(".language-btn").forEach(button => {
+        button.classList.toggle(
+          "active",
+          button.dataset.lang === language
+        );
+      });
+
+      document.querySelectorAll(".coach-quick-q").forEach(button => {
+        const key = button.dataset.questionKey;
+        button.dataset.question = t[key];
+      });
+
+      if (!isThinking) {
+        input.placeholder = t.inputPlaceholder;
+      }
+
+      localStorage.setItem("goalblitz-language", language);
+    }
+
+    function hideCoach() {
+      document.body.classList.add("coach-hidden");
+    }
+
+    function showCoach() {
+      document.body.classList.remove("coach-hidden");
+      setTimeout(() => input.focus(), 320);
+    }
+
+    function scrollChatToBottom() {
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addMessage(text, role) {
+      const row = document.createElement("div");
+      row.className = `message-row ${role}`;
+
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = text;
+
+      row.appendChild(message);
+      chat.appendChild(row);
+      scrollChatToBottom();
+
+      return row;
+    }
+
+    function addThinking() {
+      const row = document.createElement("div");
+      row.className = "message-row typing";
+
+      const card = document.createElement("div");
+      card.className = "thinking-card";
+
+      const orb = document.createElement("span");
+      orb.className = "thinking-orb";
+
+      const copy = document.createElement("div");
+      copy.className = "thinking-copy";
+
+      const title = document.createElement("div");
+      title.className = "thinking-title";
+      title.textContent = translations[currentLanguage].thinking;
+
+      const subtitle = document.createElement("div");
+      subtitle.className = "thinking-subtitle";
+      subtitle.textContent =
+        translations[currentLanguage].thinkingSubtitles[0];
+
+      copy.append(title, subtitle);
+
+      const bars = document.createElement("div");
+      bars.className = "thinking-bars";
+      bars.innerHTML = "<span></span><span></span><span></span>";
+
+      card.append(orb, copy, bars);
+      row.appendChild(card);
+      chat.appendChild(row);
+      scrollChatToBottom();
+
+      let subtitleIndex = 0;
+
+      const subtitleTimer = setInterval(() => {
+        if (!document.body.contains(row)) {
+          clearInterval(subtitleTimer);
+          return;
+        }
+
+        const subtitles = translations[currentLanguage].thinkingSubtitles;
+
+        subtitleIndex = (subtitleIndex + 1) % subtitles.length;
+        subtitle.textContent = subtitles[subtitleIndex];
+      }, 1150);
+
+      row.finishThinking = () => {
+        clearInterval(subtitleTimer);
+
+        card.classList.add("leaving");
+
+        return new Promise(resolve => {
+          setTimeout(() => {
+            row.remove();
+            resolve();
+          }, 270);
+        });
+      };
+
+      return row;
+    }
+
+    function setThinking(value) {
+      isThinking = value;
+      sendButton.disabled = value;
+
+      document.body.classList.toggle("is-thinking", value);
+
+      input.disabled = false;
+      input.placeholder = value
+        ? translations[currentLanguage].thinkingPlaceholder
+        : translations[currentLanguage].inputPlaceholder;
+    }
+
+    function createSuggestedQuestions() {
+      const t = translations[currentLanguage];
+
+      const suggestions = [
+        {
+          label: t.suggestedQuestion1,
+          question: t.poweredQuestion
+        },
+        {
+          label: t.suggestedQuestion2,
+          question: t.dashQuestion
+        },
+        {
+          label: t.suggestedQuestion3,
+          question: t.beginnerQuestion
+        }
+      ];
+
+      const box = document.createElement("div");
+      box.className = "suggested-questions";
+
+      suggestions.forEach(item => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.textContent = item.label;
+
+        button.addEventListener("click", () => {
+          if (isThinking) return;
+
+          input.value = item.question;
+          form.requestSubmit();
+        });
+
+        box.appendChild(button);
+      });
+
+      return box;
+    }
+
+    function createFeedbackButtons() {
+      const t = translations[currentLanguage];
+
+      const feedback = document.createElement("div");
+      feedback.className = "message-feedback";
+
+      const helpfulButton = document.createElement("button");
+      helpfulButton.type = "button";
+      helpfulButton.textContent = t.helpful;
+
+      const notHelpfulButton = document.createElement("button");
+      notHelpfulButton.type = "button";
+      notHelpfulButton.textContent = t.notHelpful;
+
+      function recordFeedback() {
+        feedback.textContent = t.thanks;
+      }
+
+      helpfulButton.addEventListener("click", recordFeedback);
+      notHelpfulButton.addEventListener("click", recordFeedback);
+
+      feedback.append(helpfulButton, notHelpfulButton);
+
+      return feedback;
+    }
+
+    function createCoachAnswerBlock() {
+      const wrapper = document.createElement("div");
+      wrapper.className = "coach-answer answer-enter";
+
+      const row = document.createElement("div");
+      row.className = "message-row coach";
+
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = "";
+
+      row.appendChild(message);
+
+      const feedback = createFeedbackButtons();
+      const suggestions = createSuggestedQuestions();
+
+      wrapper.append(row, feedback, suggestions);
+      chat.appendChild(wrapper);
+      scrollChatToBottom();
+
+      return message;
+    }
+
+    function addErrorAnswer(text) {
+      const message = createCoachAnswerBlock();
+      message.textContent = text;
+      scrollChatToBottom();
+    }
+
+    document.querySelectorAll(".language-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        translatePage(button.dataset.lang);
+      });
+    });
+
+    document.querySelectorAll(".coach-quick-q").forEach(button => {
+      button.addEventListener("click", () => {
+        if (isThinking) return;
+
+        input.value = button.dataset.question;
+        form.requestSubmit();
+      });
+    });
+
+    hideCoachButton.addEventListener("click", hideCoach);
+    showCoachButton.addEventListener("click", showCoach);
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const question = input.value.trim();
+
+      if (!question || isThinking) {
+        return;
+      }
+
+      if (welcomeEl) {
+        welcomeEl.style.display = "none";
+      }
+
+      addMessage(question, "user");
+
+      input.value = "";
+      setThinking(true);
+
+      const thinking = addThinking();
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            question,
+            language: currentLanguage,
+            history: conversationHistory
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+
+          throw new Error(
+            errorData.detail || "The AI Coach could not answer right now."
+          );
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        let fullAnswer = "";
+        let answerMessage = null;
+        let firstChunkReceived = false;
+
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            break;
+          }
+
+          const chunk = decoder.decode(value, { stream: true });
+
+          if (!chunk) {
+            continue;
+          }
+
+          if (!firstChunkReceived) {
+            firstChunkReceived = true;
+
+            await thinking.finishThinking();
+
+            answerMessage = createCoachAnswerBlock();
+          }
+
+          fullAnswer += chunk;
+          answerMessage.textContent = fullAnswer;
+          scrollChatToBottom();
+        }
+
+        fullAnswer += decoder.decode();
+
+        if (!firstChunkReceived) {
+          await thinking.finishThinking();
+          answerMessage = createCoachAnswerBlock();
+        }
+
+        if (!fullAnswer.trim()) {
+          answerMessage.textContent =
+            translations[currentLanguage].fallback;
+        }
+
+        scrollChatToBottom();
+
+        // Update conversation history with this exchange.
+        const finalAnswer = answerMessage.textContent.trim();
+
+        conversationHistory.push({
+          role: "user",
+          content: question
+        });
+
+        conversationHistory.push({
+          role: "assistant",
+          content: finalAnswer
+        });
+
+        // Keep only the last 6 messages (3 turns).
+        conversationHistory = conversationHistory.slice(-6);
+
+      } catch (error) {
+        await thinking.finishThinking();
+
+        addErrorAnswer(
+          `${translations[currentLanguage].errorPrefix}${error.message}`
+        );
+
+      } finally {
+        setThinking(false);
+        input.focus();
+      }
+    });
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        } else {
+          entry.target.classList.remove("visible");
+        }
+      });
+    }, {
+      threshold: 0.18
+    });
+
+    reveals.forEach(element => observer.observe(element));
+
+    translatePage(localStorage.getItem("goalblitz-language") || "en");
+  </script>
+</body>
+</html>
